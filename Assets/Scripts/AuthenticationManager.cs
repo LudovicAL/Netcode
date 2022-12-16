@@ -11,6 +11,8 @@ public class AuthenticationManager : MonoBehaviour {
     [SerializeField]
     private bool manualAuthentication;
 
+    private bool eventSetupCompleted = false;
+
     private void Awake() {
         if (instance != null && instance != this) {
             Destroy(this.gameObject);
@@ -19,26 +21,26 @@ public class AuthenticationManager : MonoBehaviour {
         }
     }
 
-    // Start is called before the first frame update
     void Start() {
-        SetupEvents();
-        if (!manualAuthentication) {
-            StartCoroutine(AutomaticAuthenticationAfterWaitForUnityServiceManagerInitialization());
-        }
+        StartCoroutine(WaitForUnityServiceManagerInitialization());
     }
 
-    // Update is called once per frame
     void Update() {
 
     }
 
-    private IEnumerator AutomaticAuthenticationAfterWaitForUnityServiceManagerInitialization() {
+    //Waits for the UnityServiceManager to initialize before launching other methods
+    private IEnumerator WaitForUnityServiceManagerInitialization() {
         while (!UnityServicesManager.instance.IsInitialized()) {
-            yield return false;
+            yield return null;
         }
-        AutomaticAuthentication();
+        SetupEvents();
+        if (!manualAuthentication) {
+            AutomaticAuthentication();
+        }
     }
 
+    //Authenticates the player without a username
     private async void AutomaticAuthentication() {
         HttpReturnCode httpReturnCode = await Authenticate("");
         httpReturnCode.Log();
@@ -47,50 +49,64 @@ public class AuthenticationManager : MonoBehaviour {
         }
     }
 
-    //Authenticates the player (returns true in case of a success)
+    //Authenticates the player with a username
     public async Task<HttpReturnCode> Authenticate(string playerName) {
         HttpReturnCode httpReturnCode = await UnityServicesManager.instance.InitializeUnityServices();
-        if (httpReturnCode.IsSuccess()) {
+        if (!httpReturnCode.IsSuccess()) {
+            return httpReturnCode;
+        }
+        SetupEvents();
+        try {
             if (playerName.Length > 0) {
                 AuthenticationService.Instance.SwitchProfile(playerName);
-            }
-            try {
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                httpReturnCode = new HttpReturnCode(200, "Authenticated successfully");
-            } catch (Exception e) {
-                httpReturnCode = new HttpReturnCode(e);
-            }
+            }        
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        } catch (Exception e) {
+            return new HttpReturnCode(e);
         }
-        return httpReturnCode;
+        return new HttpReturnCode(200, "Authenticated successfully");
     }
 
-    public void Logout() {
+    //Logs out, returns true in case of a success
+    public bool Logout() {
         try {
             AuthenticationService.Instance.SignOut();
-            CanvasCoordinator.instance.SwitchPanel("Panel Authentication");
+            return true;
         } catch (Exception e) {
             Debug.Log("An error occured while signing out: " + e.ToString());
+            return false;
         }
     }
 
+    //Setups the AuthenticationService's events
     private void SetupEvents() {
-        AuthenticationService.Instance.SignedIn += () => {
-            Debug.Log("Player " + AuthenticationService.Instance.PlayerId + " signed in successfully");
-        };
+        if (!eventSetupCompleted) {
+            try {
+                AuthenticationService.Instance.SignedIn += () => {
+                    Debug.Log("Player " + AuthenticationService.Instance.PlayerId + " signed in successfully");
+                };
 
-        AuthenticationService.Instance.SignInFailed += (e) => {
-            Debug.LogWarning("An error occured while authenticating:\n" + e.ToString());
-        };
+                AuthenticationService.Instance.SignInFailed += (e) => {
+                    Debug.LogWarning("An error occured while authenticating:\n" + e.ToString());
+                };
 
-        AuthenticationService.Instance.SignedOut += () => {
-            Debug.Log("Player " + AuthenticationService.Instance.PlayerId + " signed out successfully");
-        };
+                AuthenticationService.Instance.SignedOut += () => {
+                    Debug.Log("Player " + AuthenticationService.Instance.PlayerId + " signed out successfully");
+                };
 
-        AuthenticationService.Instance.Expired += () => {
-            Debug.Log("Player session could not be refreshed and expired.");
-        };
+                AuthenticationService.Instance.Expired += () => {
+                    Debug.Log("Player session could not be refreshed and expired.");
+                };
+            } catch {
+                Debug.LogWarning("An error occured during the events setup phase.");
+                return;
+            }
+            Debug.Log("Events setup complete");
+            eventSetupCompleted = true;
+        }
     }
 
+    //Returns the value of variable manualAuthentication
     public bool IsManualAuthenticationOn() {
         return manualAuthentication;
     }

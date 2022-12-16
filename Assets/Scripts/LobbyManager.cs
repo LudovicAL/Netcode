@@ -27,14 +27,16 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    // Start is called before the first frame update
     void Start() {
     }
 
-    // Update is called once per frame
     void Update() {
         HandleLobbyHeartbeat();
         HandleLobbyPollForUpdates();
+    }
+    
+    async void OnApplicationQuit() {
+        (await LeaveLobby()).Log();
     }
 
     //Creates a lobby
@@ -117,13 +119,16 @@ public class LobbyManager : MonoBehaviour {
 
     //Leaves the current lobby
     public async Task<HttpReturnCode> LeaveLobby() {
-        try {
-            await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
-            currentLobby = null;
-            return new HttpReturnCode(200, "Lobby left successfully");
-        } catch (Exception e) {
-            return new HttpReturnCode(500, "An error occured while leaving the lobby:\n" + e.ToString());
+        if (currentLobby != null) {
+            try {
+                await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
+                currentLobby = null;
+                return new HttpReturnCode(200, "Lobby left successfully.");
+            } catch (Exception e) {
+                return new HttpReturnCode(500, "An error occured while leaving the lobby:\n" + e.ToString());
+            }
         }
+        return new HttpReturnCode(200, "Player is not in a lobby.");
     }
 
     //Request the lastest lobby upates
@@ -140,10 +145,10 @@ public class LobbyManager : MonoBehaviour {
 
     //Sends a frequent heartbeat to keep the lobby active
     private async void HandleLobbyHeartbeat() {
-        if (currentLobby != null) {
+        if (currentLobby != null && IsHost()) {
             heartBeatTimer -= Time.deltaTime;
             if (heartBeatTimer < 0f) {
-                heartBeatTimer = 15f;
+                heartBeatTimer = 14f;
                 await LobbyService.Instance.SendHeartbeatPingAsync(currentLobby.Id);
             }
         }
@@ -187,9 +192,15 @@ public class LobbyManager : MonoBehaviour {
 
     //Defines a Player object
     private Player DefineNewPlayerObject() {
+        string profile = "";
+        try {
+            profile = AuthenticationService.Instance.Profile;
+        } catch (Exception e) {
+            Debug.LogWarning("An error occured while defining a new player object:\n" + e.ToString());
+        }
         return new Player {
             Data = new Dictionary<string, PlayerDataObject> {
-                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, AuthenticationService.Instance.Profile) }
+                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, profile) }
             }
         };
     }
@@ -230,5 +241,16 @@ public class LobbyManager : MonoBehaviour {
     //Returns the current lobby player list
     public List<Player> GetCurrentLobbyPlayerList() {
         return currentLobby.Players;
+    }
+
+    //Returns true if the player is host of the current lobby
+    private bool IsHost() {
+        String playerId = "";
+        try {
+            playerId = AuthenticationService.Instance.PlayerId;
+        } catch (Exception e) {
+            Debug.LogWarning("An error occured while verifying if the current player is host of the lobby:\n" + e.ToString());
+        }
+        return currentLobby.HostId == playerId;
     }
 }

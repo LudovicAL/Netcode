@@ -26,13 +26,13 @@ public class LobbyCanvas : MonoBehaviour {
     [SerializeField]
     private TMP_InputField lobbyNameInputField;
     [SerializeField]
-    private Button createLobbyButton;
+    private ExtendedButton createLobbyButton;
     [SerializeField]
     private Toggle privateLobbyToggle;
     [SerializeField]
     private TMP_InputField lobbyCodeInputField;
     [SerializeField]
-    private Button joinLobbyByCodeButton;
+    private ExtendedButton joinLobbyByCodeButton;
     [SerializeField]
     private Transform availableLobbiesPanel;
     [SerializeField]
@@ -58,7 +58,6 @@ public class LobbyCanvas : MonoBehaviour {
     [SerializeField]
     private Button leaveLobbyButton;
 
-    // Start is called before the first frame update
     void Start() {
         LobbyManager.instance.lobbyPolledEvent.AddListener(UpdateJoinedLobbyPanel);
         if (createLobbyButton) {
@@ -92,7 +91,6 @@ public class LobbyCanvas : MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
     void Update() {
         if (availableLobbiesPanel.gameObject.activeInHierarchy) {
             refreshTimer -= Time.deltaTime;
@@ -107,6 +105,7 @@ public class LobbyCanvas : MonoBehaviour {
         SwitchPanel(panelList.First<GameObject>().name);
     }
 
+    //Initializes the panel's input fields
     private void InitializeInputFields() {
         lobbyNameInputField.text = "";
         lobbyCodeInputField.text = "";
@@ -135,9 +134,12 @@ public class LobbyCanvas : MonoBehaviour {
                 if (httpReturnCode.IsSuccess()) {
                     SwitchPanel("Panel Joined");
                     UpdateJoinedLobbyPanel();
+                } else {
+                    createLobbyButton.ShakeButtonSideways();
                 }
             } else {
                 Debug.LogWarning("Enter a lobby name first");
+                createLobbyButton.HighlightLinkedInputField();
             }
         } else {
             Debug.LogWarning("Missing a GameObject reference");
@@ -162,20 +164,25 @@ public class LobbyCanvas : MonoBehaviour {
             if (httpReturnCode.IsSuccess()) {
                 SwitchPanel("Panel Joined");
                 UpdateJoinedLobbyPanel();
+            } else {
+                joinLobbyByCodeButton.ShakeButtonSideways();
             }
         } else {
             Debug.LogWarning("Enter a lobby code first");
+            joinLobbyByCodeButton.HighlightLinkedInputField();
         }
     }
 
     //Requests to join a lobby by Id
-    private async void JoinLobbyById(string lobbyId) {
+    private async void JoinLobbyById(string lobbyId, ExtendedButton button) {
         if (lobbyId.Length > 0) {
             HttpReturnCode httpReturnCode = await LobbyManager.instance.JoinLobbyById(lobbyId);
             httpReturnCode.Log();
             if (httpReturnCode.IsSuccess()) {
                 SwitchPanel("Panel Joined");
                 UpdateJoinedLobbyPanel();
+            } else {
+                button.ShakeButtonSideways();
             }
         } else {
             Debug.LogWarning("Enter a lobby id first");
@@ -196,11 +203,11 @@ public class LobbyCanvas : MonoBehaviour {
                     GameObject newPanelAvailableLobby = Instantiate(panelAvailableLobbyPrefab, availableLobbiesPanel);
                     newPanelAvailableLobby.transform.Find("Text AvailableLobbyName").GetComponent<TextMeshProUGUI>().text = lobby.Name;
                     newPanelAvailableLobby.transform.Find("Text AvailableLobbyOccupancy").GetComponent<TextMeshProUGUI>().text = lobby.Players.Count + "/" + lobby.MaxPlayers;
-                    Button newPanelAvailableLobbyButton = newPanelAvailableLobby.transform.Find("Button JoinAvailableLobby").GetComponent<Button>();
+                    ExtendedButton newPanelAvailableLobbyButton = newPanelAvailableLobby.transform.Find("Button JoinAvailableLobby").GetComponentInChildren<ExtendedButton>();
                     if (lobby.AvailableSlots > 0) {
                         string lobbyId = lobby.Id;
                         newPanelAvailableLobbyButton.onClick.AddListener(delegate {
-                            JoinLobbyById(lobbyId);
+                            JoinLobbyById(lobbyId, newPanelAvailableLobbyButton);
                         });
                     } else {
                         newPanelAvailableLobbyButton.enabled = false;
@@ -212,8 +219,11 @@ public class LobbyCanvas : MonoBehaviour {
         }
     }
 
+    //Logs out from the current lobby
     private void Logout() {
-        AuthenticationManager.instance.Logout();
+        if (AuthenticationManager.instance.Logout()) {
+            CanvasCoordinator.instance.SwitchPanel("Panel Authentication");
+        }
     }
 
     //Requests to leave the current lobby

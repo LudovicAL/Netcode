@@ -14,12 +14,10 @@ public class UnityServicesManager : MonoBehaviour {
         }
     }
 
-    // Start is called before the first frame update
     async void Start() {
         (await InitializeUnityServices()).Log();
     }
 
-    // Update is called once per frame
     void Update() {
 
     }
@@ -32,10 +30,13 @@ public class UnityServicesManager : MonoBehaviour {
             } catch (Exception e) {
                 return new HttpReturnCode(e);
             }
+        } else if (UnityServices.State == ServicesInitializationState.Initializing) {
+            return new HttpReturnCode(400, "UnityServices are initializing.");
         }
         return new HttpReturnCode(200, "Initialized UnityServices successfully.");
     }
 
+    //Returns true if UnityServices are initialized
     public bool IsInitialized() {
         return (UnityServices.State == ServicesInitializationState.Initialized);
     }

@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class AuthenticationCanvas : MonoBehaviour {
 
@@ -8,9 +7,8 @@ public class AuthenticationCanvas : MonoBehaviour {
     [SerializeField]
     private TMP_InputField playerNameInputField;
     [SerializeField]
-    private Button authenticateButton;
+    private ExtendedButton authenticateButton;
 
-    // Start is called before the first frame update
     void Start() {
         if (authenticateButton) {
             authenticateButton.onClick.AddListener(() => {
@@ -19,7 +17,6 @@ public class AuthenticationCanvas : MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
     void Update() {
 
     }
@@ -37,9 +34,12 @@ public class AuthenticationCanvas : MonoBehaviour {
                 httpReturnCode.Log();
                 if (httpReturnCode.IsSuccess()) {
                     CanvasCoordinator.instance.SwitchPanel("Panel Lobby");
+                } else {
+                    authenticateButton.ShakeButtonSideways();
                 }
             } else {
                 Debug.LogWarning("Enter a player name first");
+                authenticateButton.HighlightLinkedInputField();
             }
         } else {
             Debug.LogWarning("Missing a GameObject reference");

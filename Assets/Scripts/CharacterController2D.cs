@@ -7,15 +7,14 @@ public class CharacterController2D : NetworkBehaviour {
     [SerializeField]
     private float movementSpeed;
 
-    // Start is called before the first frame update
     void Start() {
     }
 
-    // Update is called once per frame
     void Update() {
         move();
     }
 
+    //Moves the character in the desired direction
     private void move() {
         if (IsOwner) {
             Vector3 moveDirection = new Vector3(0f, 0f, 0f);

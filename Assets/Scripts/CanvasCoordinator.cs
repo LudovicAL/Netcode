@@ -18,12 +18,10 @@ public class CanvasCoordinator : MonoBehaviour {
         }
     }
 
-    // Start is called before the first frame update
     void Start() {
         SwitchPanel(panelList.First<GameObject>().name);
     }
 
-    // Update is called once per frame
     void Update() {
 
     }
