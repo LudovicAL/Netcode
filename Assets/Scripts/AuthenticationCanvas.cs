@@ -34,15 +34,19 @@ public class AuthenticationCanvas : MonoBehaviour {
                 httpReturnCode.Log();
                 if (httpReturnCode.IsSuccess()) {
                     CanvasCoordinator.instance.SwitchPanel("Panel Lobby");
+                    AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
                 } else {
                     authenticateButton.ShakeButtonSideways();
+                    AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
                 }
             } else {
                 Debug.LogWarning("Enter a player name first");
                 authenticateButton.HighlightLinkedInputField();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
             }
         } else {
             Debug.LogWarning("Missing a GameObject reference");
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 }

@@ -20,6 +20,7 @@ public class LobbyCanvas : MonoBehaviour {
     [SerializeField]
     private float delayBetweenLobbiesListAutomaticRefresh;
 
+    private List<Player> currentLobbyPlayerList = new List<Player>();
     private float refreshTimer;
 
     [Header("SEARCH")]
@@ -40,7 +41,7 @@ public class LobbyCanvas : MonoBehaviour {
     [SerializeField]
     private Button refreshAvailableLobbiesButton;
     [SerializeField]
-    private Button logoutButton;
+    private ExtendedButton logoutButton;
 
     [Header("JOINED")]
     [SerializeField]
@@ -56,7 +57,7 @@ public class LobbyCanvas : MonoBehaviour {
     [SerializeField]
     private TextMeshProUGUI currentLobbyCode;
     [SerializeField]
-    private Button leaveLobbyButton;
+    private ExtendedButton leaveLobbyButton;
 
     void Start() {
         LobbyManager.instance.lobbyPolledEvent.AddListener(UpdateJoinedLobbyPanel);
@@ -76,6 +77,7 @@ public class LobbyCanvas : MonoBehaviour {
                     refreshTimer = delayBetweenLobbiesListAutomaticRefresh;
                     RefreshAvailableLobbies();
                 }
+                AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
             });
         }
         if (logoutButton) {
@@ -134,15 +136,19 @@ public class LobbyCanvas : MonoBehaviour {
                 if (httpReturnCode.IsSuccess()) {
                     SwitchPanel("Panel Joined");
                     UpdateJoinedLobbyPanel();
+                    AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
                 } else {
                     createLobbyButton.ShakeButtonSideways();
+                    AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
                 }
             } else {
                 Debug.LogWarning("Enter a lobby name first");
                 createLobbyButton.HighlightLinkedInputField();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
             }
         } else {
             Debug.LogWarning("Missing a GameObject reference");
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 
@@ -152,6 +158,7 @@ public class LobbyCanvas : MonoBehaviour {
             JoinLobbyByCode(lobbyCodeInputField.text);
         } else {
             Debug.LogWarning("Missing a GameObject reference");
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 
@@ -164,12 +171,15 @@ public class LobbyCanvas : MonoBehaviour {
             if (httpReturnCode.IsSuccess()) {
                 SwitchPanel("Panel Joined");
                 UpdateJoinedLobbyPanel();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
             } else {
                 joinLobbyByCodeButton.ShakeButtonSideways();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
             }
         } else {
             Debug.LogWarning("Enter a lobby code first");
             joinLobbyByCodeButton.HighlightLinkedInputField();
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 
@@ -181,11 +191,14 @@ public class LobbyCanvas : MonoBehaviour {
             if (httpReturnCode.IsSuccess()) {
                 SwitchPanel("Panel Joined");
                 UpdateJoinedLobbyPanel();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
             } else {
                 button.ShakeButtonSideways();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
             }
         } else {
             Debug.LogWarning("Enter a lobby id first");
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 
@@ -219,10 +232,14 @@ public class LobbyCanvas : MonoBehaviour {
         }
     }
 
-    //Logs out from the current lobby
+    //Logs out and returns to authentication
     private void Logout() {
         if (AuthenticationManager.instance.Logout()) {
             CanvasCoordinator.instance.SwitchPanel("Panel Authentication");
+            AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
+        } else {
+            logoutButton.ShakeButtonSideways();
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 
@@ -232,10 +249,16 @@ public class LobbyCanvas : MonoBehaviour {
             HttpReturnCode httpReturnCode = await LobbyManager.instance.LeaveLobby();
             httpReturnCode.Log();
             if (httpReturnCode.IsSuccess()) {
+                currentLobbyPlayerList.Clear();
                 SwitchPanel("Panel Search");
+                AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
+            } else {
+                leaveLobbyButton.ShakeButtonSideways();
+                AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
             }
         } else {
             Debug.LogWarning("Missing a GameObject reference");
+            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
     }
 
@@ -256,15 +279,36 @@ public class LobbyCanvas : MonoBehaviour {
                 GameObject.Destroy(child.gameObject);
             }
             if (panelPlayerNamePrefab) {
-                List<Player> currentLobbyPlayerList = LobbyManager.instance.GetCurrentLobbyPlayerList();
+                List<Player> oldLobbyPlayerlist = currentLobbyPlayerList;
+                currentLobbyPlayerList = LobbyManager.instance.GetCurrentLobbyPlayerList();
                 foreach (Player player in currentLobbyPlayerList) {
                     GameObject newPlayerNamePanel = Instantiate(panelPlayerNamePrefab, panelPlayers);
                     newPlayerNamePanel.GetComponentInChildren<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
                 }
+                PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(oldLobbyPlayerlist, currentLobbyPlayerList);
             }
         }
         if (currentLobbyCode) {
             currentLobbyCode.text = LobbyManager.instance.GetCurrentLobbyCode();
+        }
+    }
+
+    private void PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(List<Player> oldLobbyPlayerList, List<Player> currentLobbyPlayerList) {
+        if (oldLobbyPlayerList.Count > 0) {
+            //Checks if at least one player joined
+            foreach (Player player in currentLobbyPlayerList) {
+                if (!oldLobbyPlayerList.Exists(x => x.Id == player.Id)) {
+                    AudioManager.Instance.PlayClip(AudioManager.Instance.playerJoiningClip);
+                    break;
+                }
+            }
+            //Checks if at least one player left
+            foreach (Player player in oldLobbyPlayerList) {
+                if (!currentLobbyPlayerList.Exists(x => x.Id == player.Id)) {
+                    AudioManager.Instance.PlayClip(AudioManager.Instance.playerLeavingClip);
+                    break;
+                }
+            }
         }
     }
 }
