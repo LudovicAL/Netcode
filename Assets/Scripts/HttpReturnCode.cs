@@ -7,6 +7,7 @@ public class HttpReturnCode {
     public int code { get; private set; }
     public string message { get; private set; }
     public QueryResponse queryResponse { get; private set; }
+    public string joinCode { get; private set; }
 
 
     public HttpReturnCode() {
@@ -20,6 +21,13 @@ public class HttpReturnCode {
         this.message = message;
         this.queryResponse = queryResponse;
     }
+
+    public HttpReturnCode(String message, string joinCode) {
+        this.code = 200;
+        this.message = message;
+        this.joinCode = joinCode;
+    }
+
     public HttpReturnCode(int code, string message) {
         this.code = code;
         this.message = message;

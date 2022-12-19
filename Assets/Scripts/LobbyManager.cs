@@ -34,7 +34,7 @@ public class LobbyManager : MonoBehaviour {
         HandleLobbyHeartbeat();
         HandleLobbyPollForUpdates();
     }
-    
+
     async void OnApplicationQuit() {
         (await LeaveLobby()).Log();
     }
@@ -90,29 +90,33 @@ public class LobbyManager : MonoBehaviour {
     }
 
     //Updates the current lobby option (host only)
-    private async void UpdateHostedLobbyOptions(bool lobbyIsPrivate, int maxPlayers) {
-        try {
-            currentLobby = await Lobbies.Instance.UpdateLobbyAsync(currentLobby.Id, new UpdateLobbyOptions {
-                IsPrivate = lobbyIsPrivate,
-                MaxPlayers = maxPlayers
-            });
-            Debug.Log("The lobby was updated.");
-        } catch (Exception e) {
-            Debug.LogWarning("An error occured while updating lobby options:\n" + e.ToString());
+    private async Task<HttpReturnCode> UpdateHostedLobbyOptions(bool lobbyIsPrivate, int maxPlayers) {
+        if (IsHost()) {
+            try {
+                currentLobby = await Lobbies.Instance.UpdateLobbyAsync(currentLobby.Id, new UpdateLobbyOptions {
+                    IsPrivate = lobbyIsPrivate,
+                    MaxPlayers = maxPlayers
+                });
+                return new HttpReturnCode(200, "The lobby was updated successfully.");
+            } catch (Exception e) {
+                return new HttpReturnCode(e);
+            }
+        } else {
+            return new HttpReturnCode(400, "Only the host of the lobby can update the lobby.");
         }
     }
 
     //Updates the player's name
-    private async void UpdatePlayerName(string newPlayerName) {
+    private async Task<HttpReturnCode> UpdatePlayerName(string newPlayerName) {
         try {
             currentLobby = await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions {
                 Data = new Dictionary<string, PlayerDataObject> {
                     { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, AuthenticationService.Instance.Profile) }
                 }
             });
-            Debug.Log("The player's name was upated");
+            return new HttpReturnCode(200, "The player's name was updated successfully.");
         } catch (Exception e) {
-            Debug.Log("An error occured while updating the player's name:\n" + e.ToString());
+            return new HttpReturnCode(e);
         }
     }
 
@@ -244,7 +248,7 @@ public class LobbyManager : MonoBehaviour {
     }
 
     //Returns true if the player is host of the current lobby
-    private bool IsHost() {
+    public bool IsHost() {
         String playerId = "";
         try {
             playerId = AuthenticationService.Instance.PlayerId;

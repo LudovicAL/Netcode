@@ -59,7 +59,7 @@ public class AuthenticationManager : MonoBehaviour {
         try {
             if (playerName.Length > 0) {
                 AuthenticationService.Instance.SwitchProfile(playerName);
-            }        
+            }
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         } catch (Exception e) {
             return new HttpReturnCode(e);

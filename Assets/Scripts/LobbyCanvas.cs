@@ -58,6 +58,8 @@ public class LobbyCanvas : MonoBehaviour {
     private TextMeshProUGUI currentLobbyCode;
     [SerializeField]
     private ExtendedButton leaveLobbyButton;
+    [SerializeField]
+    private ExtendedButton startGameButton;
 
     void Start() {
         LobbyManager.instance.lobbyPolledEvent.AddListener(UpdateJoinedLobbyPanel);
@@ -290,6 +292,9 @@ public class LobbyCanvas : MonoBehaviour {
         }
         if (currentLobbyCode) {
             currentLobbyCode.text = LobbyManager.instance.GetCurrentLobbyCode();
+        }
+        if (startGameButton) {
+            startGameButton.interactable = LobbyManager.instance.IsHost();
         }
     }
 
