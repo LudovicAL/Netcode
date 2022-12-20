@@ -286,6 +286,7 @@ public class LobbyCanvas : MonoBehaviour {
                 foreach (Player player in currentLobbyPlayerList) {
                     GameObject newPlayerNamePanel = Instantiate(panelPlayerNamePrefab, panelPlayers);
                     newPlayerNamePanel.GetComponentInChildren<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
+                    newPlayerNamePanel.transform.Find("Image HostIndicator").gameObject.SetActive(LobbyManager.instance.IsHost(player.Id));
                 }
                 PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(oldLobbyPlayerlist, currentLobbyPlayerList);
             }

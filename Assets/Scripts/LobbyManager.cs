@@ -255,6 +255,10 @@ public class LobbyManager : MonoBehaviour {
         } catch (Exception e) {
             Debug.LogWarning("An error occured while verifying if the current player is host of the lobby:\n" + e.ToString());
         }
+        return IsHost(playerId);
+    }
+
+    public bool IsHost(string playerId) {
         return currentLobby.HostId == playerId;
     }
 }
