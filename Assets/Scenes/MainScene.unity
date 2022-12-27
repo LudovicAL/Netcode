@@ -219,6 +219,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 573652783652422251, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: tooltipText
+      value: Only the host can start the game
+      objectReference: {fileID: 0}
     - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: tooltipText
       value: 'Only the lobby host
@@ -236,17 +240,14 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3838902709623510668, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 277241948}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
 --- !u!114 &35945098 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
   m_PrefabInstance: {fileID: 35945097}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277241947}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9e61fd2cd75eb94399d68e209010258, type: 3}
@@ -463,28 +464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &277241947 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3838902709623510668, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
-  m_PrefabInstance: {fileID: 35945097}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &277241948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277241947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls: []
 --- !u!1 &284845830
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,12 +774,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_fontSize
-      value: 37.7
+      value: 27.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 137618282732984160, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1720356727}
   m_SourcePrefab: {fileID: 100100000, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
 --- !u!224 &313614704 stripped
 RectTransform:
@@ -903,7 +885,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1038,7 +1020,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1264,7 +1246,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1921,7 +1903,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.2
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2741,7 +2723,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2956,7 +2938,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3779,7 +3761,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3958,7 +3940,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 15.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4482,6 +4464,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701303974}
   m_CullTransparentMesh: 1
+--- !u!1 &1720356725 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 137618282732984160, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+  m_PrefabInstance: {fileID: 313614703}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720356727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720356725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d50806d597f525944af4ffc4bdfe35f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: 
 --- !u!1 &1755504689
 GameObject:
   m_ObjectHideFlags: 0
@@ -5357,7 +5357,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.85
+  m_fontSize: 36.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5684,7 +5684,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.85
+  m_fontSize: 36.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5819,7 +5819,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.95
+  m_fontSize: 25.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6079,7 +6079,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.85
+  m_fontSize: 36.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

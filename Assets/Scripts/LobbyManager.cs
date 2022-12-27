@@ -107,7 +107,7 @@ public class LobbyManager : MonoBehaviour {
     }
 
     //Updates the player's name
-    private async Task<HttpReturnCode> UpdatePlayerName(string newPlayerName) {
+    public async Task<HttpReturnCode> UpdatePlayerName() {
         try {
             currentLobby = await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions {
                 Data = new Dictionary<string, PlayerDataObject> {
@@ -120,6 +120,19 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
+    //Updates the player's color
+    public async Task<HttpReturnCode> UpdatePlayerColor(string newPlayerColor) {
+        try {
+            currentLobby = await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions {
+                Data = new Dictionary<string, PlayerDataObject> {
+                    { "PlayerColor", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, newPlayerColor) }
+                }
+            });
+            return new HttpReturnCode(200, "The player's color was updated successfully (" + newPlayerColor + ").");
+        } catch (Exception e) {
+            return new HttpReturnCode(e);
+        }
+    }
 
     //Leaves the current lobby
     public async Task<HttpReturnCode> LeaveLobby() {
@@ -196,7 +209,7 @@ public class LobbyManager : MonoBehaviour {
 
     //Defines a Player object
     private Player DefineNewPlayerObject() {
-        string profile = "";
+        string profile = "playerName";
         try {
             profile = AuthenticationService.Instance.Profile;
         } catch (Exception e) {
@@ -204,18 +217,10 @@ public class LobbyManager : MonoBehaviour {
         }
         return new Player {
             Data = new Dictionary<string, PlayerDataObject> {
-                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, profile) }
+                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, profile) },
+                { "PlayerColor", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, ColorUtility.GetRandomColorKey()) }
             }
         };
-    }
-
-    //Prints the Id of every player in the lobby
-    private void PrintPlayersInCurrentLobby(Lobby lobby) {
-        Debug.Log("Players in lobby " + lobby.Name + ":");
-        foreach (Player player in lobby.Players) {
-            Debug.Log("Player Id: " + player.Id + " // Player name: " + player.Data["PlayerName"].Value);
-        }
-
     }
 
     //Returns the current lobby name
@@ -249,7 +254,7 @@ public class LobbyManager : MonoBehaviour {
 
     //Returns true if the player is host of the current lobby
     public bool IsHost() {
-        String playerId = "";
+        string playerId = "";
         try {
             playerId = AuthenticationService.Instance.PlayerId;
         } catch (Exception e) {

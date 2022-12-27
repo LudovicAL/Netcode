@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
@@ -285,8 +286,23 @@ public class LobbyCanvas : MonoBehaviour {
                 currentLobbyPlayerList = LobbyManager.instance.GetCurrentLobbyPlayerList();
                 foreach (Player player in currentLobbyPlayerList) {
                     GameObject newPlayerNamePanel = Instantiate(panelPlayerNamePrefab, panelPlayers);
-                    newPlayerNamePanel.GetComponentInChildren<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
                     newPlayerNamePanel.transform.Find("Image HostIndicator").gameObject.SetActive(LobbyManager.instance.IsHost(player.Id));
+                    Button colorButton = newPlayerNamePanel.transform.Find("Button PlayerColor").GetComponent<Button>();
+                    bool isCurrentPlayer = player.Id.Equals(AuthenticationService.Instance.PlayerId);
+                    colorButton.GetComponent<UITooltip>().enabled = isCurrentPlayer;
+                    colorButton.interactable = isCurrentPlayer;
+                    if (isCurrentPlayer) {
+                        colorButton.onClick.AddListener(async delegate {
+                            string nextColorKey = ColorUtility.GetNextColorKey(player.Data["PlayerColor"].Value);
+                            colorButton.transform.Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[nextColorKey];
+                            colorButton.interactable = false;
+                            colorButton.transform.Find("Image PlayerColor").Find("Image PlayerColorLoader").gameObject.SetActive(true);
+                            HttpReturnCode httpReturnCode = await LobbyManager.instance.UpdatePlayerColor(nextColorKey);
+                            httpReturnCode.Log();
+                        });
+                    }
+                    newPlayerNamePanel.transform.Find("Button PlayerColor").Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[player.Data["PlayerColor"].Value];
+                    newPlayerNamePanel.GetComponentInChildren<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
                 }
                 PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(oldLobbyPlayerlist, currentLobbyPlayerList);
             }
@@ -296,9 +312,11 @@ public class LobbyCanvas : MonoBehaviour {
         }
         if (startGameButton) {
             startGameButton.interactable = LobbyManager.instance.IsHost();
+            startGameButton.GetComponentInParent<UITooltip>().enabled = !LobbyManager.instance.IsHost();
         }
     }
 
+    //Checks if players have left or joined the lobby and plays the corresponding audioclips
     private void PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(List<Player> oldLobbyPlayerList, List<Player> currentLobbyPlayerList) {
         if (oldLobbyPlayerList.Count > 0) {
             //Checks if at least one player joined
