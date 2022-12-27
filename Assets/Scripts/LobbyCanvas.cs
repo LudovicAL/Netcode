@@ -5,6 +5,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class LobbyCanvas : MonoBehaviour {
@@ -119,9 +120,27 @@ public class LobbyCanvas : MonoBehaviour {
     //Switches to the specified UI Panel
     private void SwitchPanel(string nameOfPanelToDisplay) {
         foreach (GameObject panel in panelList) {
-            panel.SetActive(panel.name == nameOfPanelToDisplay);
+            panel.SetActive(panel.name.Equals(nameOfPanelToDisplay));
         }
+        ResetSelection();
         InitializeInputFields();
+    }
+
+    private void ResetSelection() {
+        foreach (GameObject panel in panelList) {
+            if (panel.activeSelf) {
+                foreach (Transform child in panel.transform) {
+                    if (child.gameObject.activeSelf) {
+                        Selectable selectable = child.GetComponentInChildren<Selectable>();
+                        if (selectable) {
+                            selectable.Select();
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
     }
 
     //Requests a lobby creation
@@ -209,6 +228,9 @@ public class LobbyCanvas : MonoBehaviour {
     private async void RefreshAvailableLobbies() {
         if (availableLobbiesPanel) {
             foreach (Transform child in availableLobbiesPanel) {
+                if (child.GetComponentInChildren<Button>().gameObject == EventSystem.current.currentSelectedGameObject) {
+                    ResetSelection();
+                }
                 GameObject.Destroy(child.gameObject);
             }
             QueryLobbiesOptions queryLobbiesOptions = LobbyManager.instance.DefineQueryLobbiesOptions(Mathf.Max(maxNumberOfResults, 5));
@@ -279,6 +301,9 @@ public class LobbyCanvas : MonoBehaviour {
         }
         if (panelPlayers) {
             foreach (Transform child in panelPlayers) {
+                if (child.GetComponentInChildren<Button>().gameObject == EventSystem.current.currentSelectedGameObject) {
+                    ResetSelection();
+                }
                 GameObject.Destroy(child.gameObject);
             }
             if (panelPlayerNamePrefab) {

@@ -229,13 +229,29 @@ PrefabInstance:
 
         can start the game.'
       objectReference: {fileID: 0}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 2059873652}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 2059873652}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_text
       value: Start game
       objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_fontSize
-      value: 34.55
+      value: 27.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -257,6 +273,11 @@ MonoBehaviour:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 137618282746391970, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
   m_PrefabInstance: {fileID: 35945097}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &62230109 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 188174, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+  m_PrefabInstance: {fileID: 1278220049}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &73229385
 GameObject:
@@ -885,7 +906,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1020,7 +1041,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1246,7 +1267,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1535,13 +1556,33 @@ PrefabInstance:
       propertyPath: linkedInputField
       value: 
       objectReference: {fileID: 276932602}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 1203196878}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 376643971}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 1184848690}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 276932602}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_text
       value: Create lobby
       objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_fontSize
-      value: 32.1
+      value: 24.55
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2241,6 +2282,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toggle PrivateLobby
       objectReference: {fileID: 0}
+    - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 1203196878}
+    - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 376643971}
+    - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 276932602}
+    - target: {fileID: 11447126, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 441776935}
     - target: {fileID: 22407258, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2331,7 +2392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2279008054002716449, guid: 4abb88e9aa99e429b8dbded4e9743a56, type: 3}
       propertyPath: m_fontSize
-      value: 16.55
+      value: 23.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2723,7 +2784,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2804,9 +2865,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 349123848}
+  - {fileID: 1952249781}
   - {fileID: 738829159}
   - {fileID: 441776934}
-  - {fileID: 1952249781}
   m_Father: {fileID: 360509580}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2938,7 +2999,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3640,6 +3701,14 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 20.1
       objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3761,7 +3830,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3940,7 +4009,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.35
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4725,9 +4794,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776755538}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -469.9405, y: -256.97025, z: 0}
-  m_LocalScale: {x: 1.0414194, y: 1.0414194, z: 1.0414194}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1536318002}
@@ -4765,7 +4834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 62230109}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!1001 &1782619686
@@ -4872,6 +4941,10 @@ PrefabInstance:
       propertyPath: linkedInputField
       value: 
       objectReference: {fileID: 376643971}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_text
       value: Join lobby
@@ -5220,12 +5293,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 35945099}
+  - {fileID: 2059873653}
   - {fileID: 75526482}
   - {fileID: 1984976786}
-  - {fileID: 2059873653}
   - {fileID: 1058149882}
   - {fileID: 2022491142}
-  - {fileID: 35945099}
   m_Father: {fileID: 831417164}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5357,7 +5430,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.85
+  m_fontSize: 36.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5509,8 +5582,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3670239756852213587, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_fontSize
-      value: 12.05
+      value: 8.7
       objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_SelectOnUp
+      value: 
+      objectReference: {fileID: 1203196878}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 376643971}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 441776935}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 1184848690}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5684,7 +5777,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.85
+  m_fontSize: 36.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5965,13 +6058,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4825284767569952621, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: m_Navigation.m_WrapAround
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_text
       value: Leave lobby
       objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_fontSize
-      value: 20.65
+      value: 27.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6079,7 +6180,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.85
+  m_fontSize: 36.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
