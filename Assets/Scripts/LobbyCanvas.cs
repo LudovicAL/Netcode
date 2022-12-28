@@ -7,6 +7,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class LobbyCanvas : MonoBehaviour {
     [Tooltip("List of all panels direct children of the Panel Lobby")]
@@ -24,6 +25,9 @@ public class LobbyCanvas : MonoBehaviour {
 
     private List<Player> currentLobbyPlayerList = new List<Player>();
     private float refreshTimer;
+    private bool resetSelectionOnNextUpdate = true;
+    private static PlayerComparer playerComparer = new PlayerComparer();
+    private Dictionary<Player, GameObject> playersInCanvasLobbyDictionnary = new Dictionary<Player, GameObject>(playerComparer);
 
     [Header("SEARCH")]
     [SerializeField]
@@ -98,17 +102,20 @@ public class LobbyCanvas : MonoBehaviour {
     }
 
     void Update() {
-        if (availableLobbiesPanel.gameObject.activeInHierarchy) {
+        if (availableLobbiesPanel.gameObject.activeSelf) {
             refreshTimer -= Time.deltaTime;
             if (refreshTimer < 0f) {
                 refreshTimer = delayBetweenLobbiesListAutomaticRefresh;
                 RefreshAvailableLobbies();
             }
         }
+        if (resetSelectionOnNextUpdate) {
+            ResetSelection();
+        }
     }
 
     void OnEnable() {
-        SwitchPanel(panelList.First<GameObject>().name);
+        SwitchPanel(panelList.First().name);
     }
 
     //Initializes the panel's input fields
@@ -122,20 +129,19 @@ public class LobbyCanvas : MonoBehaviour {
         foreach (GameObject panel in panelList) {
             panel.SetActive(panel.name.Equals(nameOfPanelToDisplay));
         }
-        ResetSelection();
+        resetSelectionOnNextUpdate = true;
         InitializeInputFields();
     }
 
     private void ResetSelection() {
+        resetSelectionOnNextUpdate = false;
         foreach (GameObject panel in panelList) {
             if (panel.activeSelf) {
-                foreach (Transform child in panel.transform) {
-                    if (child.gameObject.activeSelf) {
-                        Selectable selectable = child.GetComponentInChildren<Selectable>();
-                        if (selectable) {
-                            selectable.Select();
-                            break;
-                        }
+                Selectable[] selectables = panel.GetComponentsInChildren<Selectable>();
+                foreach (Selectable selectable in selectables) {
+                    if (selectable.gameObject.activeSelf && selectable.interactable) {
+                        selectable.Select();
+                        break;
                     }
                 }
                 break;
@@ -229,7 +235,7 @@ public class LobbyCanvas : MonoBehaviour {
         if (availableLobbiesPanel) {
             foreach (Transform child in availableLobbiesPanel) {
                 if (child.GetComponentInChildren<Button>().gameObject == EventSystem.current.currentSelectedGameObject) {
-                    ResetSelection();
+                    resetSelectionOnNextUpdate = true;
                 }
                 GameObject.Destroy(child.gameObject);
             }
@@ -299,26 +305,59 @@ public class LobbyCanvas : MonoBehaviour {
         if (currentLobbyPrivacy) {
             currentLobbyPrivacy.text = LobbyManager.instance.GetCurrentLobbyPrivacy();
         }
-        if (panelPlayers) {
-            foreach (Transform child in panelPlayers) {
-                if (child.GetComponentInChildren<Button>().gameObject == EventSystem.current.currentSelectedGameObject) {
-                    ResetSelection();
+        if (panelPlayers && panelPlayerNamePrefab) {
+            List<Player> currentLobbyPlayerList = LobbyManager.instance.GetCurrentLobbyPlayerList();
+            bool atLeastOnePlayerLeft = false;
+            bool atLeastOnePlayerJoined = false;
+
+            //REMOVE PLAYERS THAT HAVE LEFT THE LOBBY
+            for (int i = playersInCanvasLobbyDictionnary.Count - 1; i >= 0; i--) {
+                if (!currentLobbyPlayerList.Contains(playersInCanvasLobbyDictionnary.ElementAt(i).Key, playerComparer)) {
+                    atLeastOnePlayerLeft = true;
+                    GameObject panelPlayerName = playersInCanvasLobbyDictionnary.ElementAt(i).Value;
+                    GameObject selectableGameObject = panelPlayerName.GetComponentInChildren<Selectable>().gameObject;
+                    if (EventSystem.current.currentSelectedGameObject == selectableGameObject) {
+                        resetSelectionOnNextUpdate = true;
+                    }
+                    Destroy(panelPlayerName);
+                    playersInCanvasLobbyDictionnary.Remove(playersInCanvasLobbyDictionnary.ElementAt(i).Key);
                 }
-                GameObject.Destroy(child.gameObject);
             }
-            if (panelPlayerNamePrefab) {
-                List<Player> oldLobbyPlayerlist = currentLobbyPlayerList;
-                currentLobbyPlayerList = LobbyManager.instance.GetCurrentLobbyPlayerList();
-                foreach (Player player in currentLobbyPlayerList) {
-                    GameObject newPlayerNamePanel = Instantiate(panelPlayerNamePrefab, panelPlayers);
-                    newPlayerNamePanel.transform.Find("Image HostIndicator").gameObject.SetActive(LobbyManager.instance.IsHost(player.Id));
-                    Button colorButton = newPlayerNamePanel.transform.Find("Button PlayerColor").GetComponent<Button>();
+            foreach (KeyValuePair<Player, GameObject> entry in playersInCanvasLobbyDictionnary) {
+                if (!currentLobbyPlayerList.Contains(entry.Key, playerComparer)) {
+                    atLeastOnePlayerLeft = true;
+                    GameObject panelPlayerName = playersInCanvasLobbyDictionnary[entry.Key];
+                    GameObject selectableGameObject = panelPlayerName.GetComponentInChildren<Selectable>().gameObject;
+                    if (EventSystem.current.currentSelectedGameObject == selectableGameObject) {
+                        resetSelectionOnNextUpdate = true;
+                    }
+                    Destroy(panelPlayerName);
+                    playersInCanvasLobbyDictionnary.Remove(entry.Key);
+                }
+            }
+            
+            foreach (Player player in currentLobbyPlayerList) {
+                GameObject panelPlayerName = null;
+                //UPDATE PLAYERS THAT STAYED IN THE LOBBY
+                List<Player> playersInCanvasLobbyList = playersInCanvasLobbyDictionnary.Keys.ToList();
+                if (playersInCanvasLobbyList.Contains(player, playerComparer)) {
+                    panelPlayerName = playersInCanvasLobbyDictionnary[player];
+                    panelPlayerName.transform.Find("Button PlayerColor").GetComponent<Button>().interactable = true;
+                    panelPlayerName.transform.Find("Button PlayerColor").Find("Image PlayerColor").Find("Image PlayerColorLoader").gameObject.SetActive(false);
+                //ADD PLAYERS THAT HAVE JOINED THE LOBBY
+                } else {
+                    atLeastOnePlayerJoined = true;
+                    panelPlayerName = Instantiate(panelPlayerNamePrefab, panelPlayers);
+                    panelPlayerName.name = player.Data["PlayerName"].Value;
+                    playersInCanvasLobbyDictionnary.Add(player, panelPlayerName);
+                    Button colorButton = panelPlayerName.transform.Find("Button PlayerColor").GetComponent<Button>();
                     bool isCurrentPlayer = player.Id.Equals(AuthenticationService.Instance.PlayerId);
                     colorButton.GetComponent<UITooltip>().enabled = isCurrentPlayer;
                     colorButton.interactable = isCurrentPlayer;
                     if (isCurrentPlayer) {
                         colorButton.onClick.AddListener(async delegate {
-                            string nextColorKey = ColorUtility.GetNextColorKey(player.Data["PlayerColor"].Value);
+                            Player currentPlayer = LobbyManager.instance.GetCurrentLobbyPlayerList().Find(x => x.Id.Equals(player.Id));
+                            string nextColorKey = ColorUtility.GetNextColorKey(currentPlayer.Data["PlayerColor"].Value);
                             colorButton.transform.Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[nextColorKey];
                             colorButton.interactable = false;
                             colorButton.transform.Find("Image PlayerColor").Find("Image PlayerColorLoader").gameObject.SetActive(true);
@@ -326,10 +365,16 @@ public class LobbyCanvas : MonoBehaviour {
                             httpReturnCode.Log();
                         });
                     }
-                    newPlayerNamePanel.transform.Find("Button PlayerColor").Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[player.Data["PlayerColor"].Value];
-                    newPlayerNamePanel.GetComponentInChildren<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
                 }
-                PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(oldLobbyPlayerlist, currentLobbyPlayerList);
+                panelPlayerName.transform.Find("Image HostIndicator").gameObject.SetActive(LobbyManager.instance.IsHost(player.Id));
+                panelPlayerName.transform.Find("Button PlayerColor").Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[player.Data["PlayerColor"].Value];                panelPlayerName.GetComponentInChildren<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
+
+            }
+            if (atLeastOnePlayerLeft) {
+                AudioManager.Instance.PlayClip(AudioManager.Instance.playerLeavingClip);
+            }
+            if (atLeastOnePlayerJoined) {
+                AudioManager.Instance.PlayClip(AudioManager.Instance.playerJoiningClip);
             }
         }
         if (currentLobbyCode) {
@@ -340,24 +385,16 @@ public class LobbyCanvas : MonoBehaviour {
             startGameButton.GetComponentInParent<UITooltip>().enabled = !LobbyManager.instance.IsHost();
         }
     }
+}
 
-    //Checks if players have left or joined the lobby and plays the corresponding audioclips
-    private void PlayAudioFeedBackForPlayersJoiningAndLeavingLobby(List<Player> oldLobbyPlayerList, List<Player> currentLobbyPlayerList) {
-        if (oldLobbyPlayerList.Count > 0) {
-            //Checks if at least one player joined
-            foreach (Player player in currentLobbyPlayerList) {
-                if (!oldLobbyPlayerList.Exists(x => x.Id == player.Id)) {
-                    AudioManager.Instance.PlayClip(AudioManager.Instance.playerJoiningClip);
-                    break;
-                }
-            }
-            //Checks if at least one player left
-            foreach (Player player in oldLobbyPlayerList) {
-                if (!currentLobbyPlayerList.Exists(x => x.Id == player.Id)) {
-                    AudioManager.Instance.PlayClip(AudioManager.Instance.playerLeavingClip);
-                    break;
-                }
-            }
-        }
+
+public class PlayerComparer : IEqualityComparer<Player> {
+
+    public bool Equals(Player x, Player y) {
+        return x.Id.Equals(y.Id);
+    }
+
+    public int GetHashCode(Player obj) {
+        return obj.Id.GetHashCode();
     }
 }

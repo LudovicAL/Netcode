@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class AuthenticationCanvas : MonoBehaviour {
 
@@ -11,6 +10,7 @@ public class AuthenticationCanvas : MonoBehaviour {
     private TMP_InputField playerNameInputField;
     [SerializeField]
     private ExtendedButton authenticateButton;
+    private bool resetSelectionOnNextUpdate = true;
 
     void Start() {
         if (authenticateButton) {
@@ -21,11 +21,25 @@ public class AuthenticationCanvas : MonoBehaviour {
     }
 
     void Update() {
-
+        if (resetSelectionOnNextUpdate) {
+            ResetSelection();
+        }
     }
 
     void OnEnable() {
         playerNameInputField.text = "";
+        resetSelectionOnNextUpdate = true;
+    }
+
+    private void ResetSelection() {
+        resetSelectionOnNextUpdate = false;
+        Selectable[] selectables = GetComponentsInChildren<Selectable>();
+        foreach (Selectable selectable in selectables) {
+            if (selectable.gameObject.activeSelf && selectable.interactable) {
+                selectable.Select();
+                break;
+            }
+        }
     }
 
     //Requests the player's authentication

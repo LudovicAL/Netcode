@@ -274,11 +274,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 137618282746391970, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
   m_PrefabInstance: {fileID: 35945097}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &62230109 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 188174, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
-  m_PrefabInstance: {fileID: 1278220049}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &73229385
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,6 +1177,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &408372102 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9161936004358976336, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+  m_PrefabInstance: {fileID: 1278220049}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &429188333
 GameObject:
   m_ObjectHideFlags: 0
@@ -2422,7 +2422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &831417164
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3054,7 +3054,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
   m_PrefabInstance: {fileID: 1278220049}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 408372102}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
@@ -3706,6 +3706,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_CustomCaretColor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_OnFocusSelectAll
       value: 0
       objectReference: {fileID: 0}
@@ -3726,7 +3730,15 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
@@ -3734,9 +3746,17 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 408372102}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 313614705}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -4878,7 +4898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 62230109}
+  m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!1001 &1782619686
