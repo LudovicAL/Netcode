@@ -27,12 +27,11 @@ public static class ColorUtility {
         int index = listOfColorKeys.IndexOf(currentColorKey);
         if (index == -1) {
             return GetRandomColorKey();
+        }
+        if (index < (listOfColorKeys.Count - 1)) {
+            return colorDictionary.Keys.ElementAtOrDefault(index + 1);
         } else {
-            if (index < (listOfColorKeys.Count - 1)) {
-                return colorDictionary.Keys.ElementAtOrDefault(index + 1);
-            } else {
-                return colorDictionary.Keys.ElementAtOrDefault(0);
-            }
+            return colorDictionary.Keys.ElementAtOrDefault(0);
         }
     }
 }

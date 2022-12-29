@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TooltipManager : MonoBehaviour {
 
@@ -46,7 +45,7 @@ public class TooltipManager : MonoBehaviour {
     }
 
     private void ShowToolTipPrivate(string text) {
-        gameObject.SetActive(true);        
+        gameObject.SetActive(true);
         tooltipText.SetText(text);
         tooltipText.ForceMeshUpdate();
     }

@@ -795,10 +795,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 137618282732984160, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1720356727}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
 --- !u!224 &313614704 stripped
 RectTransform:
@@ -3703,7 +3700,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_ContentType
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_KeyboardType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_CharacterLimit
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_CustomCaretColor
@@ -3719,7 +3724,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_CharacterValidation
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_Navigation.m_WrapAround
@@ -4597,24 +4602,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701303974}
   m_CullTransparentMesh: 1
---- !u!1 &1720356725 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 137618282732984160, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
-  m_PrefabInstance: {fileID: 313614703}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1720356727
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1720356725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d50806d597f525944af4ffc4bdfe35f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: 
 --- !u!1 &1755504689
 GameObject:
   m_ObjectHideFlags: 0
@@ -5699,6 +5686,14 @@ PrefabInstance:
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_ContentType
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_KeyboardType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
+      propertyPath: m_CharacterLimit
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7837086772529479393, guid: 4c5368a58301e4892a15a0228d4fb291, type: 3}
       propertyPath: m_OnFocusSelectAll

@@ -91,18 +91,17 @@ public class LobbyManager : MonoBehaviour {
 
     //Updates the current lobby option (host only)
     private async Task<HttpReturnCode> UpdateHostedLobbyOptions(bool lobbyIsPrivate, int maxPlayers) {
-        if (IsHost()) {
-            try {
-                currentLobby = await Lobbies.Instance.UpdateLobbyAsync(currentLobby.Id, new UpdateLobbyOptions {
-                    IsPrivate = lobbyIsPrivate,
-                    MaxPlayers = maxPlayers
-                });
-                return new HttpReturnCode(200, "The lobby was updated successfully.");
-            } catch (Exception e) {
-                return new HttpReturnCode(e);
-            }
-        } else {
+        if (!IsHost()) {
             return new HttpReturnCode(400, "Only the host of the lobby can update the lobby.");
+        }
+        try {
+            currentLobby = await Lobbies.Instance.UpdateLobbyAsync(currentLobby.Id, new UpdateLobbyOptions {
+                IsPrivate = lobbyIsPrivate,
+                MaxPlayers = maxPlayers
+            });
+            return new HttpReturnCode(200, "The lobby was updated successfully.");
+        } catch (Exception e) {
+            return new HttpReturnCode(e);
         }
     }
 
@@ -136,38 +135,40 @@ public class LobbyManager : MonoBehaviour {
 
     //Leaves the current lobby
     public async Task<HttpReturnCode> LeaveLobby() {
-        if (currentLobby != null) {
-            try {
-                await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
-                currentLobby = null;
-                return new HttpReturnCode(200, "Lobby left successfully.");
-            } catch (Exception e) {
-                return new HttpReturnCode(500, "An error occured while leaving the lobby:\n" + e.ToString());
-            }
+        if (currentLobby == null) {
+            return new HttpReturnCode(200, "Player is not in a lobby.");
         }
-        return new HttpReturnCode(200, "Player is not in a lobby.");
+        try {
+            await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
+            currentLobby = null;
+            return new HttpReturnCode(200, "Lobby left successfully.");
+        } catch (Exception e) {
+            return new HttpReturnCode(500, "An error occured while leaving the lobby:\n" + e.ToString());
+        }
     }
 
     //Request the lastest lobby upates
     private async void HandleLobbyPollForUpdates() {
-        if (currentLobby != null) {
-            lobbyUpdateTimer -= Time.deltaTime;
-            if (lobbyUpdateTimer < 0f) {
-                lobbyUpdateTimer = delayBetweenLobbyPolls;
-                currentLobby = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
-                lobbyPolledEvent.Invoke();
-            }
+        if (currentLobby == null) {
+            return;
+        }
+        lobbyUpdateTimer -= Time.deltaTime;
+        if (lobbyUpdateTimer < 0f) {
+            lobbyUpdateTimer = delayBetweenLobbyPolls;
+            currentLobby = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+            lobbyPolledEvent.Invoke();
         }
     }
 
     //Sends a frequent heartbeat to keep the lobby active
     private async void HandleLobbyHeartbeat() {
-        if (currentLobby != null && IsHost()) {
-            heartBeatTimer -= Time.deltaTime;
-            if (heartBeatTimer < 0f) {
-                heartBeatTimer = 14f;
-                await LobbyService.Instance.SendHeartbeatPingAsync(currentLobby.Id);
-            }
+        if (currentLobby == null || !IsHost()) {
+            return;
+        }
+        heartBeatTimer -= Time.deltaTime;
+        if (heartBeatTimer < 0f) {
+            heartBeatTimer = 14f;
+            await LobbyService.Instance.SendHeartbeatPingAsync(currentLobby.Id);
         }
     }
 

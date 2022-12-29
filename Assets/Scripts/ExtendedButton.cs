@@ -13,15 +13,15 @@ public class ExtendedButton : UnityEngine.UI.Button {
 
     //Highlights the linked InputField object
     public void HighlightLinkedInputField() {
-        if (linkedInputField != null) {
-            linkedInputField.Select();
-            if (TweenManager.instance != null) {
-                TweenManager.instance.TweenScale(linkedInputField.transform.parent, TweenManager.instance.tweenScaleDefault, null);
-            } else {
-                Debug.LogWarning("Your scene is missing a TweenManager");
-            }
-        } else {
+        if (linkedInputField == null) {
             Debug.LogWarning("Missing a GameObject reference");
+            return;
+        }
+        linkedInputField.Select();
+        if (TweenManager.instance != null) {
+            TweenManager.instance.TweenScale(linkedInputField.transform.parent, TweenManager.instance.tweenScaleDefault, null);
+        } else {
+            Debug.LogWarning("Your scene is missing a TweenManager");
         }
     }
 

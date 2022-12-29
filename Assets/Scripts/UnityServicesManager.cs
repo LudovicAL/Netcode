@@ -24,16 +24,19 @@ public class UnityServicesManager : MonoBehaviour {
 
     //Initializes UnityServices
     public async Task<HttpReturnCode> InitializeUnityServices() {
-        if (UnityServices.State == ServicesInitializationState.Uninitialized) {
-            try {
-                await UnityServices.InitializeAsync();
-            } catch (Exception e) {
-                return new HttpReturnCode(e);
-            }
-        } else if (UnityServices.State == ServicesInitializationState.Initializing) {
-            return new HttpReturnCode(400, "UnityServices are initializing.");
+        switch (UnityServices.State) {
+            case ServicesInitializationState.Initialized:
+                return new HttpReturnCode(200, "UnityServices already initialized.");
+            case ServicesInitializationState.Initializing:
+                return new HttpReturnCode(400, "UnityServices are initializing.");
+            default:
+                try {
+                    await UnityServices.InitializeAsync();
+                    return new HttpReturnCode(200, "UnityServices initialized successfully.");
+                } catch (Exception e) {
+                    return new HttpReturnCode(e);
+                }
         }
-        return new HttpReturnCode(200, "Initialized UnityServices successfully.");
     }
 
     //Returns true if UnityServices are initialized
