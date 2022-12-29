@@ -738,6 +738,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 573652783652422251, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
+      propertyPath: tooltipText
+      value: This lobby is full.
+      objectReference: {fileID: 0}
     - target: {fileID: 5925529754340721758, guid: 5fb3f803faa2a5546a4ff89271aa0d6d, type: 3}
       propertyPath: m_text
       value: Join

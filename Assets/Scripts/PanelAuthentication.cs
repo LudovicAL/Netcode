@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AuthenticationCanvas : MonoBehaviour {
+public class PanelAuthentication : MonoBehaviour {
 
     [Header("AUTHENTICATE")]
     [SerializeField]
@@ -64,7 +64,7 @@ public class AuthenticationCanvas : MonoBehaviour {
         HttpReturnCode httpReturnCode = await AuthenticationManager.instance.Authenticate(playerName);
         httpReturnCode.Log();
         if (httpReturnCode.IsSuccess()) {
-            CanvasCoordinator.instance.SwitchPanel("Panel Lobby");
+            CanvasCoordinator.instance.SwitchPanel("Panel Search");
             AudioManager.Instance.PlayClip(AudioManager.Instance.menuClickClip);
         } else {
             authenticateButton.ShakeButtonSideways();

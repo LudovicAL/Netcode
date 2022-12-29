@@ -184,9 +184,10 @@ public class LobbyManager : MonoBehaviour {
     public QueryLobbiesOptions DefineQueryLobbiesOptions(int maxNumberOfResults) {
         return new QueryLobbiesOptions {
             Count = maxNumberOfResults,
-            Filters = new List<QueryFilter> {
-                new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
-            },
+            //Add the following line if you want your search to return only lobbies with available slots
+            //Filters = new List<QueryFilter> {
+            //    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
+            //},
             Order = new List<QueryOrder> {
                 new QueryOrder(false, QueryOrder.FieldOptions.Created)
 
@@ -223,6 +224,12 @@ public class LobbyManager : MonoBehaviour {
             }
         };
     }
+
+    //Returns true if the user is currently in a lobby
+    public bool IsInLobby() {
+        return currentLobby != null;
+    }
+
 
     //Returns the current lobby name
     public string GetCurrentLobbyName() {

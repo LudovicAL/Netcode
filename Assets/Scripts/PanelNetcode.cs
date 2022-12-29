@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NetcodeCanvas : MonoBehaviour {
+public class PanelNetcode : MonoBehaviour {
 
     [SerializeField]
     private Button hostButton;

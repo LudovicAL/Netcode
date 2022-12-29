@@ -6,7 +6,6 @@ public class CanvasCoordinator : MonoBehaviour {
 
     public static CanvasCoordinator instance { get; private set; }
 
-    [Tooltip("List of all panels direct children of the Canvas")]
     [SerializeField]
     private List<GameObject> panelList;
 

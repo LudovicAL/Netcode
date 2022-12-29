@@ -11,9 +11,9 @@ public class IfNullTryFetchAttribute : PropertyAttribute {
 
     public static void Init(MonoBehaviour monoBehavior) {
         System.Reflection.FieldInfo[] fieldInfos = monoBehavior.GetType().GetFields(
-            System.Reflection.BindingFlags.DeclaredOnly 
-            | System.Reflection.BindingFlags.Public 
-            | System.Reflection.BindingFlags.NonPublic 
+            System.Reflection.BindingFlags.DeclaredOnly
+            | System.Reflection.BindingFlags.Public
+            | System.Reflection.BindingFlags.NonPublic
             | System.Reflection.BindingFlags.Instance);
         foreach (System.Reflection.FieldInfo fieldInfo in fieldInfos) {
             object fieldInfoValue = fieldInfo.GetValue(monoBehavior);
