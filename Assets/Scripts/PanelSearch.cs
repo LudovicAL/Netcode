@@ -28,28 +28,36 @@ public class PanelSearch : MonoBehaviour {
 
     [Header("CREATE LOBBY")]
     [SerializeField]
+    [IfNullTryFetch("InputField LobbyName")]
     private TMP_InputField lobbyNameInputField;
     [SerializeField]
+    [IfNullTryFetch("Toggle PrivateLobby")]
     private Toggle privateLobbyToggle;
     [SerializeField]
+    [IfNullTryFetch("Button CreateLobby")]
     private ExtendedButton createLobbyButton;
 
     [Header("JOIN LOBBY BY CODE")]
     [SerializeField]
+    [IfNullTryFetch("Button JoinByCode")]
     private TMP_InputField lobbyCodeInputField;
     [SerializeField]
+    [IfNullTryFetch("InputField LobbyCode")]
     private ExtendedButton joinLobbyByCodeButton;
 
     [Header("JOIN AVAILABLE LOBBY")]
     [SerializeField]
+    [IfNullTryFetch("Panel ListOfAvailableLobbies")]
     private Transform availableLobbiesPanel;
     [SerializeField]
     private GameObject panelAvailableLobbyPrefab;
     [SerializeField]
+    [IfNullTryFetch("Button RefreshAvailableLobbies")]
     private Button refreshAvailableLobbiesButton;
 
     [Header("LOGOUT")]
     [SerializeField]
+    [IfNullTryFetch("Button Logout")]
     private ExtendedButton logoutButton;
 
 

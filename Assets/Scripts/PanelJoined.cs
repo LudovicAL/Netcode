@@ -15,22 +15,29 @@ public class PanelJoined : MonoBehaviour {
 
     [Header("LOBBY INFO")]
     [SerializeField]
+    [IfNullTryFetch("Text LobbyName")]
     private TextMeshProUGUI currentLobbyName;
     [SerializeField]
+    [IfNullTryFetch("Text LobbyOccupancy")]
     private TextMeshProUGUI currentLobbyOccupancy;
     [SerializeField]
+    [IfNullTryFetch("Text LobbyPrivacy")]
     private TextMeshProUGUI currentLobbyPrivacy;
     [Header("PLAYERS IN LOBBY")]
     [SerializeField]
+    [IfNullTryFetch("Panel PlayerList")]
     private Transform panelPlayers;
     [SerializeField]
     private GameObject panelPlayerNamePrefab;
     [Header("OTHERS")]
     [SerializeField]
+    [IfNullTryFetch("Text LobbyCode")]
     private TextMeshProUGUI currentLobbyCode;
     [SerializeField]
+    [IfNullTryFetch("Button Leave")]
     private ExtendedButton leaveLobbyButton;
     [SerializeField]
+    [IfNullTryFetch("Button StartGame")]
     private ExtendedButton startGameButton;
 
     // Start is called before the first frame update
@@ -147,7 +154,7 @@ public class PanelJoined : MonoBehaviour {
                     colorButton.onClick.AddListener(async delegate {
                         Player currentPlayer = LobbyManager.instance.GetCurrentLobbyPlayerList().Find(x => x.Id.Equals(player.Id));
                         string nextColorKey = ColorUtility.GetNextColorKey(currentPlayer.Data["PlayerColor"].Value);
-                        colorButton.transform.Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[nextColorKey];
+                        colorButton.transform.Find("Image PlayerColor").GetComponent<Image>().color = ColorUtility.GetColorFromKey(nextColorKey);
                         colorButton.interactable = false;
                         resetSelectionOnNextUpdate = true;
                         colorButton.transform.Find("Image PlayerColor/Image PlayerColorLoader").gameObject.SetActive(true);
@@ -157,7 +164,7 @@ public class PanelJoined : MonoBehaviour {
                 }
             }
             panelPlayerName.transform.Find("Image HostIndicator").gameObject.SetActive(LobbyManager.instance.IsHost(player.Id));
-            panelPlayerName.transform.Find("Button PlayerColor/Image PlayerColor").GetComponent<Image>().color = ColorUtility.colorDictionary[player.Data["PlayerColor"].Value];
+            panelPlayerName.transform.Find("Button PlayerColor/Image PlayerColor").GetComponent<Image>().color = ColorUtility.GetColorFromKey(player.Data["PlayerColor"].Value);
             panelPlayerName.transform.Find("Text PlayerName").GetComponent<TextMeshProUGUI>().text = player.Data["PlayerName"].Value;
 
         }

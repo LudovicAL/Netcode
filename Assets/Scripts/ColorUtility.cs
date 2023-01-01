@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class ColorUtility {
 
-    public static Dictionary<string, Color> colorDictionary = new Dictionary<string, Color>(){
+    private static Dictionary<string, Color> colorDictionary = new Dictionary<string, Color>(){
         {"blue", Color.blue},
         {"cyan", Color.cyan},
         {"green", Color.green},
@@ -17,6 +17,10 @@ public static class ColorUtility {
         {"purple", new Color(0.627f, 0.125f, 0.941f, 1.0f)},
         {"brown", new Color(0.39f, 0.1961f, 0.1255f, 1.0f)}
     };
+
+    public static Color GetColorFromKey(string key) {
+        return colorDictionary[key];
+    }
 
     public static string GetRandomColorKey() {
         return colorDictionary.Keys.ElementAtOrDefault(Random.Range(0, colorDictionary.Count - 1));
