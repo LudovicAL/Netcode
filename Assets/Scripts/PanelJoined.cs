@@ -48,6 +48,11 @@ public class PanelJoined : MonoBehaviour {
                 LeaveLobby();
             });
         }
+        if (startGameButton) {
+            startGameButton.onClick.AddListener(() => {
+                StartGame();
+            });
+        }
     }
 
     // Update is called once per frame
@@ -70,11 +75,6 @@ public class PanelJoined : MonoBehaviour {
 
     //Requests to leave the current lobby
     private async void LeaveLobby() {
-        if (!leaveLobbyButton) {
-            Debug.LogWarning("Missing a GameObject reference");
-            AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
-            return;
-        }
         HttpReturnCode httpReturnCode = await LobbyManager.instance.LeaveLobby();
         httpReturnCode.Log();
         if (httpReturnCode.IsSuccess()) {
@@ -84,6 +84,25 @@ public class PanelJoined : MonoBehaviour {
             leaveLobbyButton.ShakeButtonSideways();
             AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
         }
+    }
+
+    //Request game start
+    private async void StartGame() {
+        HttpReturnCode httpReturnCode = await RelayManager.instance.CreateRelay();
+        httpReturnCode.Log();
+        if (httpReturnCode.IsSuccess()) {
+            bool privacy = LobbyManager.instance.GetCurrentLobbyPrivacy();
+            int maxPlayer = LobbyManager.instance.GetCurrentLobbyMaxPlayer();
+            HttpReturnCode secondHttpReturnCode = await LobbyManager.instance.UpdateHostedLobbyOptions(privacy, maxPlayer, httpReturnCode.joinCode);
+            secondHttpReturnCode.Log();
+            if (secondHttpReturnCode.IsSuccess()) {
+                await LobbyManager.instance.LeaveLobby();
+                CanvasCoordinator.instance.SwitchPanel("Panel Game");
+                return;
+            }
+        }
+        startGameButton.ShakeButtonSideways();
+        AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
     }
 
     //Updates the informations displayed on the Joined Panel
@@ -99,7 +118,7 @@ public class PanelJoined : MonoBehaviour {
             currentLobbyOccupancy.text = LobbyManager.instance.GetCurrentLobbyOccupancy();
         }
         if (currentLobbyPrivacy) {
-            currentLobbyPrivacy.text = LobbyManager.instance.GetCurrentLobbyPrivacy();
+            currentLobbyPrivacy.text = LobbyManager.instance.GetCurrentLobbyPrivacy() ? "Private" : "Public";
         }
         if (panelPlayers && panelPlayerNamePrefab) {
             UpdatePanelPlayers();

@@ -57,7 +57,7 @@ public class AuthenticationManager : MonoBehaviour {
         }
         SetupEvents();
         try {
-            if (playerName.Length > 0) {
+            if (!string.IsNullOrWhiteSpace(playerName)) {
                 AuthenticationService.Instance.SwitchProfile(playerName);
             }
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -83,7 +83,7 @@ public class AuthenticationManager : MonoBehaviour {
         if (!eventSetupCompleted) {
             try {
                 AuthenticationService.Instance.SignedIn += () => {
-                    Debug.Log("Player " + AuthenticationService.Instance.PlayerId + " signed in successfully");
+                    Debug.Log("Player signed in successfully");
                 };
 
                 AuthenticationService.Instance.SignInFailed += (e) => {
@@ -91,7 +91,7 @@ public class AuthenticationManager : MonoBehaviour {
                 };
 
                 AuthenticationService.Instance.SignedOut += () => {
-                    Debug.Log("Player " + AuthenticationService.Instance.PlayerId + " signed out successfully");
+                    Debug.Log("Player signed out successfully");
                 };
 
                 AuthenticationService.Instance.Expired += () => {

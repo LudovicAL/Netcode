@@ -17,6 +17,10 @@ public class LobbyManager : MonoBehaviour {
     private float heartBeatTimer;
     private float lobbyUpdateTimer;
 
+    private const string PLAYER_COLOR = "PlayerColor";
+    private const string PLAYER_NAME = "PlayerName";
+    private const string JOIN_CODE = "JoinCode";
+
     public UnityEvent lobbyPolledEvent = new UnityEvent();
 
     private void Awake() {
@@ -90,14 +94,17 @@ public class LobbyManager : MonoBehaviour {
     }
 
     //Updates the current lobby option (host only)
-    private async Task<HttpReturnCode> UpdateHostedLobbyOptions(bool lobbyIsPrivate, int maxPlayers) {
+    public async Task<HttpReturnCode> UpdateHostedLobbyOptions(bool lobbyIsPrivate, int maxPlayers, string joinCode) {
         if (!IsHost()) {
             return new HttpReturnCode(400, "Only the host of the lobby can update the lobby.");
         }
         try {
             currentLobby = await Lobbies.Instance.UpdateLobbyAsync(currentLobby.Id, new UpdateLobbyOptions {
                 IsPrivate = lobbyIsPrivate,
-                MaxPlayers = maxPlayers
+                MaxPlayers = maxPlayers,
+                Data = new Dictionary<string, DataObject> {
+                    { JOIN_CODE, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                }
             });
             return new HttpReturnCode(200, "The lobby was updated successfully.");
         } catch (Exception e) {
@@ -110,7 +117,7 @@ public class LobbyManager : MonoBehaviour {
         try {
             currentLobby = await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions {
                 Data = new Dictionary<string, PlayerDataObject> {
-                    { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, AuthenticationService.Instance.Profile) }
+                    { PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, AuthenticationService.Instance.Profile) }
                 }
             });
             return new HttpReturnCode(200, "The player's name was updated successfully.");
@@ -124,7 +131,7 @@ public class LobbyManager : MonoBehaviour {
         try {
             currentLobby = await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions {
                 Data = new Dictionary<string, PlayerDataObject> {
-                    { "PlayerColor", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, newPlayerColor) }
+                    { PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, newPlayerColor) }
                 }
             });
             return new HttpReturnCode(200, "The player's color was updated successfully (" + newPlayerColor + ").");
@@ -157,6 +164,17 @@ public class LobbyManager : MonoBehaviour {
             lobbyUpdateTimer = delayBetweenLobbyPolls;
             currentLobby = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
             lobbyPolledEvent.Invoke();
+            if (currentLobby.Data[JOIN_CODE].Value != "0") {
+                HttpReturnCode httpReturnCode = await RelayManager.instance.JoinRelay(currentLobby.Data[JOIN_CODE].Value);
+                httpReturnCode.Log();
+                if (httpReturnCode.IsSuccess()) {
+                    CanvasCoordinator.instance.SwitchPanel("Panel Game");
+                } else {
+                    CanvasCoordinator.instance.SwitchPanel("Panel Search");
+                }
+                HttpReturnCode secondHttpReturnCode = await LeaveLobby();
+                secondHttpReturnCode.Log();
+            }
         }
     }
 
@@ -175,8 +193,11 @@ public class LobbyManager : MonoBehaviour {
     //Defines a CreateLobbyOptions object
     public CreateLobbyOptions DefineCreateLobbyOption(bool lobbyIsPrivate) {
         return new CreateLobbyOptions {
-            IsPrivate = lobbyIsPrivate,
             Player = DefineNewPlayerObject(),
+            IsPrivate = lobbyIsPrivate,
+            Data = new Dictionary<string, DataObject> {
+                { JOIN_CODE, new DataObject(DataObject.VisibilityOptions.Member, "0") }
+            }
         };
     }
 
@@ -219,8 +240,8 @@ public class LobbyManager : MonoBehaviour {
         }
         return new Player {
             Data = new Dictionary<string, PlayerDataObject> {
-                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, profile) },
-                { "PlayerColor", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, ColorUtility.GetRandomColorKey()) }
+                { PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, profile) },
+                { PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, ColorUtility.GetRandomColorKey()) }
             }
         };
     }
@@ -233,31 +254,49 @@ public class LobbyManager : MonoBehaviour {
 
     //Returns the current lobby name
     public string GetCurrentLobbyName() {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a lobby name from.");
+        }
         return currentLobby.Name;
     }
 
     //Returns the current lobby occupancy
     public string GetCurrentLobbyOccupancy() {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull occupancy data from.");
+        }
         return (currentLobby.Players.Count.ToString() + "/" + currentLobby.MaxPlayers.ToString());
     }
 
     //Returns the current lobby privacy setting
-    public string GetCurrentLobbyPrivacy() {
-        if (currentLobby.IsPrivate) {
-            return "Private";
-        } else {
-            return "Public";
+    public bool GetCurrentLobbyPrivacy() {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a privacy setting from.");
         }
+        return currentLobby.IsPrivate;
     }
 
     //Returns the current lobby code
     public string GetCurrentLobbyCode() {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a lobby code from.");
+        }
         return currentLobby.LobbyCode;
     }
 
     //Returns the current lobby player list
     public List<Player> GetCurrentLobbyPlayerList() {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a player list from.");
+        }
         return currentLobby.Players;
+    }
+
+    public int GetCurrentLobbyMaxPlayer() {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a player max from.");
+        }
+        return currentLobby.MaxPlayers;
     }
 
     //Returns true if the player is host of the current lobby
@@ -272,6 +311,20 @@ public class LobbyManager : MonoBehaviour {
     }
 
     public bool IsHost(string playerId) {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to host.");
+        }
         return currentLobby.HostId == playerId;
+    }
+
+    public string GetPlayerColor(string playerId) {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a player color from.");
+        }
+        Player player = currentLobby.Players.Find(x => x.Id.Equals(playerId));
+        if (player == null) {
+            throw new Exception("Player could not be found in the current lobby.");
+        }
+        return player.Data[PLAYER_COLOR].Value;
     }
 }

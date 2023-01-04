@@ -7,6 +7,17 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 
 public class RelayManager : MonoBehaviour {
+
+    public static RelayManager instance { get; private set; }
+
+    private void Awake() {
+        if (instance != null && instance != this) {
+            Destroy(this.gameObject);
+        } else {
+            instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start() {
 
@@ -17,7 +28,7 @@ public class RelayManager : MonoBehaviour {
 
     }
 
-    private async Task<HttpReturnCode> CreateRelay() {
+    public async Task<HttpReturnCode> CreateRelay() {
         string joinCode;
         try {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(3);
@@ -32,14 +43,17 @@ public class RelayManager : MonoBehaviour {
                     allocation.ConnectionData
                 );
 
-            NetworkManager.Singleton.StartHost();
+            bool success = NetworkManager.Singleton.StartHost();
+            if (!success) {
+                throw new Exception("Host did not start successfully");
+            }
         } catch (Exception e) {
             return new HttpReturnCode(e);
         }
         return new HttpReturnCode("Relay created successfully.", joinCode);
     }
 
-    private async Task<HttpReturnCode> JoinRelay(string joinCode) {
+    public async Task<HttpReturnCode> JoinRelay(string joinCode) {
         try {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(
