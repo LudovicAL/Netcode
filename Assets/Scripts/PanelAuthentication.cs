@@ -13,11 +13,16 @@ public class PanelAuthentication : MonoBehaviour {
     private ExtendedButton authenticateButton;
     private bool resetSelectionOnNextUpdate = true;
 
+    private const string LAST_USER_NAME = "LastUserName";
+
     private void Awake() {
         IfNullTryFetchAttribute.Init(this);
     }
 
     void Start() {
+        if (playerNameInputField) {
+            playerNameInputField.text = PlayerPrefs.GetString(LAST_USER_NAME, "");
+        }
         if (authenticateButton) {
             authenticateButton.onClick.AddListener(() => {
                 Authenticate();
@@ -61,6 +66,8 @@ public class PanelAuthentication : MonoBehaviour {
             AudioManager.Instance.PlayClip(AudioManager.Instance.warningClip);
             return;
         }
+        PlayerPrefs.SetString(LAST_USER_NAME, playerName);
+        PlayerPrefs.Save();
         HttpReturnCode httpReturnCode = await AuthenticationManager.instance.Authenticate(playerName);
         httpReturnCode.Log();
         if (httpReturnCode.IsSuccess()) {

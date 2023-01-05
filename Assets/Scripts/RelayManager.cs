@@ -2,12 +2,19 @@ using System;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using Unity.Services.Authentication;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 
 public class RelayManager : MonoBehaviour {
 
+    [Serializable]
+    public class ConnectionPayload {
+        public string playerId;
+        public string playerName;
+        public string playerColor;
+    }
     public static RelayManager instance { get; private set; }
 
     private void Awake() {
@@ -28,9 +35,21 @@ public class RelayManager : MonoBehaviour {
 
     }
 
+    private void SetConnectionPayload() {
+        string payload = JsonUtility.ToJson(new ConnectionPayload() {
+            playerId = AuthenticationService.Instance.PlayerId,
+            playerName = LobbyManager.instance.GetPlayerName(AuthenticationService.Instance.PlayerId),
+            playerColor = LobbyManager.instance.GetPlayerColor(AuthenticationService.Instance.PlayerId)
+        });
+        byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
+    }
+
     public async Task<HttpReturnCode> CreateRelay() {
+        SetConnectionPayload();
         string joinCode;
         try {
+
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(3);
 
             joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
@@ -54,6 +73,7 @@ public class RelayManager : MonoBehaviour {
     }
 
     public async Task<HttpReturnCode> JoinRelay(string joinCode) {
+        SetConnectionPayload();
         try {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(

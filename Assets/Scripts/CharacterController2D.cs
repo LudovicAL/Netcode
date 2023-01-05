@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using Unity.Services.Authentication;
 using UnityEngine;
 
 public class CharacterController2D : NetworkBehaviour {
@@ -9,7 +8,7 @@ public class CharacterController2D : NetworkBehaviour {
     private float movementSpeed;
 
     void Start() {
-        
+
     }
 
     void Update() {

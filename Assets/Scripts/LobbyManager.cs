@@ -16,7 +16,6 @@ public class LobbyManager : MonoBehaviour {
     private Lobby currentLobby;
     private float heartBeatTimer;
     private float lobbyUpdateTimer;
-
     private const string PLAYER_COLOR = "PlayerColor";
     private const string PLAYER_NAME = "PlayerName";
     private const string JOIN_CODE = "JoinCode";
@@ -232,7 +231,7 @@ public class LobbyManager : MonoBehaviour {
 
     //Defines a Player object
     private Player DefineNewPlayerObject() {
-        string profile = "playerName";
+        string profile = "playerInfo";
         try {
             profile = AuthenticationService.Instance.Profile;
         } catch (Exception e) {
@@ -315,6 +314,17 @@ public class LobbyManager : MonoBehaviour {
             throw new Exception("There is no lobby to host.");
         }
         return currentLobby.HostId == playerId;
+    }
+
+    public string GetPlayerName(string playerId) {
+        if (currentLobby == null) {
+            throw new Exception("There is no lobby to pull a player name from.");
+        }
+        Player player = currentLobby.Players.Find(x => x.Id.Equals(playerId));
+        if (player == null) {
+            throw new Exception("Player could not be found in the current lobby.");
+        }
+        return player.Data[PLAYER_NAME].Value;
     }
 
     public string GetPlayerColor(string playerId) {

@@ -18,6 +18,7 @@ public class PanelNetcode : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+
         if (hostButton) {
             hostButton.onClick.AddListener(() => {
                 NetworkManager.Singleton.StartHost();
